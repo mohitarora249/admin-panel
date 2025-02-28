@@ -29,4 +29,17 @@ export interface WeeklyActivityData {
   name: string;
   Withdraw: number;
   Deposit: number;
+}
+
+// Add new interface for user profile
+export interface UserProfileData {
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
+export interface NotificationData {
+  id: number;
+  title: string;
+  message: string;
 } 

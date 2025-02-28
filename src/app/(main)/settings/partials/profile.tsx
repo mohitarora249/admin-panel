@@ -1,24 +1,75 @@
-import { Camera, ChevronDown } from 'lucide-react';
+"use client";
+
+import { useState, useEffect } from 'react';
+import { Camera } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { generateInitials } from '@/lib/initials';
+import { useProfileQuery, useUpdateProfile } from '@/hooks/use-profile-query';
+import type { UserProfileData } from '@/types/api';
 
 const Profile = () => {
+  const { data: profile } = useProfileQuery();
+  const updateProfile = useUpdateProfile();
+  const [formData, setFormData] = useState<UserProfileData>({
+    name: '',
+    email: '',
+    avatar: '',
+  });
+
+  // Update form data when profile is loaded
+  useEffect(() => {
+    if (profile) {
+      setFormData(profile);
+    }
+  }, [profile?.name]);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setFormData(prev => ({ ...prev, avatar: base64String }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateProfile.mutateAsync(formData);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
-    <div>
-      {/* Profile Picture */}
+    <form onSubmit={handleSubmit}>
       <div className="flex justify-center mb-8">
         <div className="relative">
           <Avatar className="relative p-2 rounded-full w-14 h-14">
-            <AvatarImage className="rounded-full" src={`https://avatar.vercel.sh/John Doe`} />
-            <AvatarFallback className="rounded-full">{generateInitials("John Doe")}</AvatarFallback>
+            <AvatarImage 
+              className="rounded-full" 
+              src={formData.avatar || `https://avatar.vercel.sh/${formData.name}`} 
+            />
+            <AvatarFallback className="rounded-full">
+              {generateInitials(formData.name)}
+            </AvatarFallback>
           </Avatar>
-          <button className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1.5">
+          <label className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1.5 cursor-pointer">
             <Camera size={16} className="text-white" />
-          </button>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handleImageUpload} 
+            />
+          </label>
         </div>
       </div>
 
-      {/* Form Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -27,24 +78,13 @@ const Profile = () => {
           <input
             type="text"
             id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="Charlene Reed"
           />
         </div>
-
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-            User Name
-          </label>
-          <input
-            type="text"
-            id="username"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="Charlene Reed"
-            disabled
-          />
-        </div>
-
+        
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Email
@@ -52,112 +92,25 @@ const Profile = () => {
           <input
             type="email"
             id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="charlenereed@gmail.com"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="**********"
-            disabled
-          />
-        </div>
-
-        <div>
-          <label htmlFor="dob" className="block text-sm font-medium text-gray-700 mb-1">
-            Date of Birth
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              id="dob"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 pr-10"
-              defaultValue="25 January 1990"
-              readOnly
-            />
-            <ChevronDown size={16} className="absolute right-3 top-3 text-gray-400" />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="present-address" className="block text-sm font-medium text-gray-700 mb-1">
-            Present Address
-          </label>
-          <input
-            type="text"
-            id="present-address"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="San Jose, California, USA"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="permanent-address" className="block text-sm font-medium text-gray-700 mb-1">
-            Permanent Address
-          </label>
-          <input
-            type="text"
-            id="permanent-address"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="San Jose, California, USA"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="San Jose"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700 mb-1">
-            Postal Code
-          </label>
-          <input
-            type="text"
-            id="postal-code"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="45962"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-            Country
-          </label>
-          <input
-            type="text"
-            id="country"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            defaultValue="USA"
           />
         </div>
       </div>
 
-      {/* Save Button */}
       <div className="mt-8 flex justify-end">
         <button
-          type="button"
-          className="px-6 py-2.5 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          type="submit"
+          disabled={updateProfile.isPending}
+          className="px-6 py-2.5 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          Save
+          {updateProfile.isPending ? 'Saving...' : 'Save'}
         </button>
       </div>
-    </div>
-  )
-}
+    </form>
+  );
+};
 
 export default Profile;
