@@ -50,4 +50,16 @@ export interface NotificationData {
   id: number;
   title: string;
   message: string;
+}
+
+export interface AccountData {
+  id: string;
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  balance: number;
+  currency: string;
+  type: 'Savings' | 'Checking' | 'Credit Card' | 'Investment';
+  status: 'Active' | 'Inactive' | 'Frozen';
+  lastTransaction: string; // ISO date string
 } 
