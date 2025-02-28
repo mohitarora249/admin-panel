@@ -22,52 +22,22 @@ import RecentTransactionItem from "./partials/recent-transcation-item";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { generateInitials } from "@/lib/initials";
 import BalanceChart from "@/components/charts/balance-chart";
+import {
+  useExpenseQuery,
+  useTransactionsQuery,
+  useContactsQuery,
+  useBalanceHistoryQuery,
+  useAnalyticsQuery,
+} from "@/hooks/use-dashboard-queries"
+
 const BankingDashboard = () => {
   const [transferAmount, setTransferAmount] = useState("525.50")
-
-  // Weekly activity data
-  const weeklyActivityData = [
-    { name: "Sat", Withdraw: 450, Deposit: 230 },
-    { name: "Sun", Withdraw: 350, Deposit: 120 },
-    { name: "Mon", Withdraw: 320, Deposit: 250 },
-    { name: "Tue", Withdraw: 450, Deposit: 370 },
-    { name: "Wed", Withdraw: 150, Deposit: 230 },
-    { name: "Thu", Withdraw: 380, Deposit: 230 },
-    { name: "Fri", Withdraw: 380, Deposit: 320 },
-  ]
-
-  // Expense statistics data
-  const expenseData = [
-    { name: "Entertainment", value: 30, color: "#3b4680" },
-    { name: "Bill Expense", value: 15, color: "#e67e22" },
-    { name: "Others", value: 35, color: "#2c2c2c" },
-    { name: "Investment", value: 20, color: "#4a6ff3" },
-  ]
-
-  // Balance history data
-  const balanceHistoryData = [
-    { name: "Jul", balance: 150 },
-    { name: "Aug", balance: 300 },
-    { name: "Sep", balance: 250 },
-    { name: "Oct", balance: 450 },
-    { name: "Nov", balance: 780 },
-    { name: "Dec", balance: 250 },
-    { name: "Jan", balance: 580 },
-  ]
-
-  // Recent transactions data
-  const recentTransactions = [
-    { id: 1, type: "Deposit", source: "from my Card", date: "28 January 2021", amount: -850, icon: "💳" },
-    { id: 2, type: "Deposit", source: "Paypal", date: "25 January 2021", amount: 2500, icon: "🅿️" },
-    { id: 3, type: "Deposit", source: "Jemi Wilson", date: "21 January 2021", amount: 5400, icon: "🔵" },
-  ]
-
-  // Quick transfer contacts
-  const quickTransferContacts = [
-    { id: 1, name: "Livia Bator", role: "CEO", avatar: "/placeholder.svg?height=60&width=60" },
-    { id: 2, name: "Randy Press", role: "Director", avatar: "/placeholder.svg?height=60&width=60" },
-    { id: 3, name: "Workman", role: "Designer", avatar: "/placeholder.svg?height=60&width=60" },
-  ]
+  
+  const { data: expenseData = [] } = useExpenseQuery()
+  const { data: recentTransactions = [] } = useTransactionsQuery()
+  const { data: quickTransferContacts = [] } = useContactsQuery()
+  const { data: balanceHistoryData = [] } = useBalanceHistoryQuery()
+  const { data: weeklyActivityData = [] } = useAnalyticsQuery()
 
   return (
     <div className="p-4  font-sans">
