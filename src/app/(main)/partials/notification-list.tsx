@@ -8,9 +8,23 @@ import {
 } from "@/components/ui/sheet";
 import { Bell } from "lucide-react";
 import { useNotificationsQuery } from "@/hooks/use-notifications-query";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function NotificationSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="p-3 border-b border-gray-200 rounded-lg shadow-sm">
+          <Skeleton className="h-5 w-3/4 mb-2" />
+          <Skeleton className="h-4 w-full" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const NotificationList = () => {
-    const { data: notifications = [] } = useNotificationsQuery();
+    const { data: notifications = [], isLoading } = useNotificationsQuery();
 
     return (
         <Sheet>
@@ -29,7 +43,9 @@ const NotificationList = () => {
                     <SheetTitle>Notifications</SheetTitle>
                 </SheetHeader>
                 <div className="mt-4 space-y-3 max-h-[calc(100vh-8rem)] overflow-y-auto">
-                    {notifications.length > 0 ? (
+                    {isLoading ? (
+                      <NotificationSkeleton />
+                    ) : notifications.length > 0 ? (
                         notifications.map((notification) => (
                             <div key={notification.id} className="p-3 border-b border-gray-200 rounded-lg shadow-sm">
                                 <p className="font-semibold">{notification.title}</p>

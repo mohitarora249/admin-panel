@@ -7,9 +7,10 @@ import { generateInitials } from '@/lib/initials';
 import { useProfileQuery, useUpdateProfile } from '@/hooks/use-profile-query';
 import type { ProfileFormValues } from '@/lib/validations/profile';
 import { ProfileForm } from './profile-form';
+import { ProfileSkeleton } from './profile-skeleton';
 
 const Profile = () => {
-  const { data: profile } = useProfileQuery();
+  const { data: profile, isLoading } = useProfileQuery();
   const updateProfile = useUpdateProfile();
   const [avatarUrl, setAvatarUrl] = useState<string>("");
 
@@ -37,6 +38,10 @@ const Profile = () => {
       avatar: avatarUrl,
     });
   };
+
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <div className="space-y-8">
