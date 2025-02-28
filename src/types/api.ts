@@ -34,7 +34,15 @@ export interface WeeklyActivityData {
 // Add new interface for user profile
 export interface UserProfileData {
   name: string;
+  username: string;
   email: string;
+  password: string;
+  dateOfBirth: Date;
+  presentAddress: string;
+  permanentAddress: string;
+  city: string;
+  postalCode: string;
+  country: string;
   avatar?: string;
 }
 

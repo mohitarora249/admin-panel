@@ -5,23 +5,19 @@ import { Camera } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { generateInitials } from '@/lib/initials';
 import { useProfileQuery, useUpdateProfile } from '@/hooks/use-profile-query';
-import type { UserProfileData } from '@/types/api';
+import type { ProfileFormValues } from '@/lib/validations/profile';
+import { ProfileForm } from './profile-form';
 
 const Profile = () => {
   const { data: profile } = useProfileQuery();
   const updateProfile = useUpdateProfile();
-  const [formData, setFormData] = useState<UserProfileData>({
-    name: '',
-    email: '',
-    avatar: '',
-  });
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
 
-  // Update form data when profile is loaded
   useEffect(() => {
     if (profile) {
-      setFormData(profile);
+      setAvatarUrl(profile.avatar || `https://avatar.vercel.sh/${profile.name}`);
     }
-  }, [profile?.name]);
+  }, [profile]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -29,33 +25,30 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        setFormData(prev => ({ ...prev, avatar: base64String }));
+        setAvatarUrl(base64String);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await updateProfile.mutateAsync(formData);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const onSubmit = async (data: ProfileFormValues) => {
+    await updateProfile.mutateAsync({
+      ...data,
+      avatar: avatarUrl,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="flex justify-center mb-8">
+    <div className="space-y-8">
+      <div className="flex justify-center">
         <div className="relative">
-          <Avatar className="relative p-2 rounded-full w-14 h-14">
+          <Avatar className="relative p-2 rounded-full w-18 h-18">
             <AvatarImage 
               className="rounded-full" 
-              src={formData.avatar || `https://avatar.vercel.sh/${formData.name}`} 
+              src={avatarUrl} 
             />
             <AvatarFallback className="rounded-full">
-              {generateInitials(formData.name)}
+              {profile?.name ? generateInitials(profile.name) : "?"}
             </AvatarFallback>
           </Avatar>
           <label className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1.5 cursor-pointer">
@@ -70,46 +63,12 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Your Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-        </div>
-      </div>
-
-      <div className="mt-8 flex justify-end">
-        <button
-          type="submit"
-          disabled={updateProfile.isPending}
-          className="px-6 py-2.5 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
-        >
-          {updateProfile.isPending ? 'Saving...' : 'Save'}
-        </button>
-      </div>
-    </form>
+      <ProfileForm 
+        initialData={profile} 
+        onSubmit={onSubmit}
+        isSubmitting={updateProfile.isPending}
+      />
+    </div>
   );
 };
 
