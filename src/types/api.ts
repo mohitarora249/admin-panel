@@ -76,4 +76,44 @@ export interface InvestmentData {
   lastUpdated: string;
   performance: number; // Percentage
   value: number; // Current total value
+}
+
+export interface LoanData {
+  id: string;
+  loanName: string;
+  type: 'Personal' | 'Home' | 'Auto' | 'Education' | 'Business';
+  amount: number;
+  remainingAmount: number;
+  interestRate: number;
+  startDate: string;
+  endDate: string;
+  status: 'Active' | 'Paid' | 'Defaulted' | 'Processing';
+  nextPayment: {
+    amount: number;
+    dueDate: string;
+  };
+  lender: string;
+}
+
+export interface CreditCardData {
+  id: string;
+  cardName: string;
+  cardNumber: string;
+  cardType: 'Visa' | 'Mastercard' | 'American Express' | 'Discover';
+  cardHolder: string;
+  expiryDate: string;
+  cvv: string;
+  creditLimit: number;
+  currentBalance: number;
+  availableCredit: number;
+  dueDate: string;
+  minimumPayment: number;
+  apr: number;
+  status: 'Active' | 'Blocked' | 'Expired';
+  issuer: string;
+  rewards: {
+    type: 'Cashback' | 'Points' | 'Miles' | 'None';
+    balance: number;
+    rate: number; // percentage or points per dollar
+  };
 } 
