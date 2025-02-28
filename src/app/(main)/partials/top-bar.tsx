@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,15 +6,14 @@ import { Menu, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import NotificationList from "./notification-list";
 import Search from "./search";
+import { MobileNav } from "./mobile-nav";
 
 const TopBar = () => {
     const { push } = useRouter();
     return (
         <header className="top-0 left-0 w-full h-[80px] md:h-[100px] bg-white shadow-md flex items-center justify-between px-6 border-b">
             <div className="flex items-center gap-4 flex-1">
-                <button className="md:hidden p-2 rounded-md hover:bg-gray-100">
-                    <Menu className="w-6 h-6 text-gray-600" />
-                </button>
+                <MobileNav />
                 <h1 className="text-2xl font-semibold flex md:justify-start justify-center flex-1 text-[#343C6A]">Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
