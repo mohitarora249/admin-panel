@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/user-menu";
-import { Bell, Menu, Settings } from "lucide-react";
+import { Menu, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import NotificationList from "./notification-list";
 import Search from "./search";

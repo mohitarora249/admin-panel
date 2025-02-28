@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 type Props = {
     tabs: {
         label: string;
@@ -10,7 +8,6 @@ type Props = {
 }
 
 const Tabs = ({ tabs, activeTab, onClick }: Props) => {
-
     return (
         <div className="border-b border-gray-200 mb-8">
             <div className="flex space-x-8">
