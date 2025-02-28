@@ -62,4 +62,18 @@ export interface AccountData {
   type: 'Savings' | 'Checking' | 'Credit Card' | 'Investment';
   status: 'Active' | 'Inactive' | 'Frozen';
   lastTransaction: string; // ISO date string
+}
+
+export interface InvestmentData {
+  id: string;
+  name: string;
+  type: 'Stock' | 'ETF' | 'Mutual Fund' | 'Crypto' | 'Bond';
+  symbol: string;
+  shares: number;
+  purchasePrice: number;
+  currentPrice: number;
+  purchaseDate: string;
+  lastUpdated: string;
+  performance: number; // Percentage
+  value: number; // Current total value
 } 
