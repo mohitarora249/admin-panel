@@ -2,7 +2,6 @@
 
 import { useInvestmentsQuery } from "@/hooks/use-investments-query";
 import { formatCurrency } from "@/lib/currency";
-import { format } from "date-fns";
 import {
   Table,
   TableBody,
